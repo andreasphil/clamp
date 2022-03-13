@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clamping | Simple CSS clamp calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="icon" href="assets/favicon.ico" sizes="any" />
+    <link rel="stylesheet" href="assets/fine@v0.1.0.css" />
+  </head>
+
+  <body>
+    <main f-container>
+      <article>
+        <form name="settings">
+          <strong>Scale from ...</strong>
+          <fieldset>
+            <label>
+              <small>Minimum size</small>
+              <input
+                type="number"
+                name="fontSizeMin"
+                required
+                min="1"
+                value="16"
+              />
+            </label>
+            <label>
+              <small>At viewport width</small>
+              <input
+                type="number"
+                name="viewportMin"
+                required
+                min="0"
+                value="370"
+              />
+            </label>
+          </fieldset>
+          <strong>Scale to ...</strong>
+          <fieldset>
+            <label>
+              <small>Maximum size</small>
+              <input
+                type="number"
+                name="fontSizeMax"
+                required
+                min="0"
+                value="20"
+              />
+            </label>
+            <label>
+              <small>At viewport width</small>
+              <input
+                type="number"
+                name="viewportMax"
+                required
+                min="0"
+                value="1440"
+              />
+            </label>
+          </fieldset>
+          <label>
+            <strong>Unit</strong>
+            <select name="unit">
+              <option value="rem">rem</option>
+              <option value="px">px</option>
+            </select>
+          </label>
+        </form>
+
+        <div class="output-container" f-transition>
+          <output><pre>Hello world</pre></output>
+          <button class="copy-button">Copy result to clipboard</button>
+        </div>
+      </article>
+
+      <footer>
+        <div>
+          <small>
+            A thing made by
+            <a href="https://andreasphil.com">Andreas Philippi.</a>
+          </small>
+        </div>
+        <div>
+          <a
+            href="https://github.com/andreasphil/clamping"
+            title="Source on GitHub"
+          >
+            <svg
+              role="img"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              />
+            </svg>
+          </a>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const outputEl = document.querySelector("output > pre");
+      const copyButtonEl = document.querySelector(".copy-button");
+
+      const state = [
+        "fontSizeMin",
+        "viewportMin",
+        "fontSizeMax",
+        "viewportMax",
+        "unit",
+      ].reduce((all, current) => {
+        all[current] = document.forms.settings.elements[current].value;
+        return all;
+      }, {});
+
+      function clamp([viewportMin, fontSizeMin], [viewportMax, fontSizeMax]) {
+        // We'll treat the scaling of the font size as a linear equation that
+        // has a minimum (minimum font size at minimum viewport width) and a
+        // maximum (maximum font size at maximum viewport width). Those will be
+        // the min and max values in the clamp CSS property. To get the central
+        // value (i.e. the part that scales), we'll need figure out the equation
+        // of the slope that passes through the minimum and maximum values. That
+        // equation will be the central value of the clamp property.
+        //
+        // See https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations/x2f8bb11595b61c86:intro-to-slope-intercept-form/a/introduction-to-slope-intercept-form
+
+        const dFontSize = Math.abs(fontSizeMax - fontSizeMin);
+        const dViewportSize = Math.abs(viewportMax - viewportMin);
+        const slope = dFontSize / dViewportSize;
+
+        // Slope intercept equation is y = mx + b, where:
+        // x ~> viewport size
+        // y ~> font size
+        // m ~> slope
+        // b ~> y intercept
+        // We know everything except b, so we'll plug one of our known
+        // points into the equation and solve for b
+        const yIntercept = fontSizeMin - slope * viewportMin;
+
+        let resSlope = slope * 100;
+        resSlope = Math.round(resSlope * 1000) / 1000;
+        let resIntercept = Math.round(yIntercept * 1000) / 1000;
+
+        return { viewport: resSlope, size: resIntercept };
+      }
+
+      copyButtonEl.addEventListener("click", () => {
+        navigator.clipboard.writeText(outputEl.innerHTML).then(() => {
+          copyButtonEl.classList.add("copy-button--success");
+          setTimeout(
+            () => copyButtonEl.classList.remove("copy-button--success"),
+            2000
+          );
+        });
+      });
+
+      function update() {
+        if (document.forms.settings.checkValidity() === false) {
+          outputEl.innerHTML = ":(";
+        } else {
+          const { size, viewport } = clamp(
+            [Number(state.viewportMin), Number(state.fontSizeMin)],
+            [Number(state.viewportMax), Number(state.fontSizeMax)]
+          );
+
+          outputEl.innerHTML = `clamp(${state.fontSizeMin}${state.unit}, ${viewport}vw + ${size}${state.unit}, ${state.fontSizeMax}${state.unit})`;
+        }
+      }
+
+      document.forms.settings.addEventListener("input", (event) => {
+        state[event.target.name] = event.target.value;
+        update();
+      });
+
+      update();
+    </script>
+
+    <style>
+      :root {
+        --body-padding-y: 0rem;
+        --container-max-width: 32rem;
+        --container-padding-y: 1rem;
+
+        --tint: 47;
+        --c-on-primary: hsl(var(--tint) 100% 15%);
+        --c-primary-container: hsl(var(--tint) 100% 59% / 0.3);
+        --c-primary: hsl(var(--tint) 100% 59%);
+        --link-color: hsl(var(--tint) 100% 30%);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --link-color: var(--c-primary);
+        }
+      }
+
+      body {
+        align-items: center;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      article {
+        padding: 2rem 2rem 1rem;
+      }
+
+      label {
+        margin-bottom: var(--block-spacing-y);
+      }
+      fieldset {
+        border: none;
+        display: flex;
+        gap: 1rem;
+        padding: 0;
+      }
+      input:invalid {
+        --input-border-color: hsl(10 100% 59%);
+        --input-focus-color: hsl(10 100% 59% / 0.3);
+      }
+
+      .output-container {
+        background: var(--c-surface-variant-bg);
+        border-radius: var(--border-radius);
+        margin: var(--block-spacing-y) -1rem 0;
+        padding: 1rem;
+      }
+      output {
+        display: block;
+        margin-bottom: 1rem;
+      }
+      output::before {
+        color: var(--c-fg-variant);
+        content: "Result:";
+        display: block;
+        font-size: var(--small-font-size);
+      }
+      pre {
+        margin: 0;
+        padding: 0;
+      }
+
+      .copy-button {
+        position: relative;
+      }
+      .copy-button::before {
+        background: var(--c-primary);
+        border-radius: inherit;
+        bottom: 0;
+        content: "✓";
+        left: 0;
+        opacity: 0.5;
+        padding: inherit;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: scale(0);
+        transition-duration: var(--transition-duration);
+        transition-property: transform, opacity;
+        transition-timing-function: var(--transition-timing-function);
+      }
+      .copy-button--success::before {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      footer {
+        align-items: center;
+        color: var(--c-fg-variant);
+        display: flex;
+        justify-content: space-between;
+        margin: 3rem 0 var(--block-spacing-y);
+        padding: 0 var(--large-border-radius);
+      }
+    </style>
+  </body>
+</html>
