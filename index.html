@@ -166,7 +166,9 @@
             [Number(state.viewportMax), Number(state.fontSizeMax)]
           );
 
-          outputEl.innerHTML = `clamp(${state.fontSizeMin}${state.unit}, ${viewport}vw + ${size}${state.unit}, ${state.fontSizeMax}${state.unit})`;
+          const sizeOperator = size < 0 ? `- ${Math.abs(size)}` : `+ ${size}`;
+
+          outputEl.innerHTML = `clamp(${state.fontSizeMin}${state.unit}, ${viewport}vw ${sizeOperator}${state.unit}, ${state.fontSizeMax}${state.unit})`;
         }
       }
 
