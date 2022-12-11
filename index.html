@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="icon" href="assets/favicon.ico" sizes="any" />
-    <link rel="stylesheet" href="assets/fine@v0.1.0.css" />
   </head>
 
   <body>
-    <main f-container>
+    <main data-container>
       <article>
         <form name="settings">
           <strong>Scale from ...</strong>
@@ -69,35 +68,18 @@
           </label>
         </form>
 
-        <div class="output-container" f-transition>
+        <div class="output-container">
           <output><pre>Hello world</pre></output>
           <button class="copy-button">Copy result to clipboard</button>
         </div>
       </article>
 
-      <footer>
-        <div>
-          <small>
-            A thing made by
-            <a href="https://andreasphil.com">Andreas Philippi.</a>
-          </small>
-        </div>
-        <div>
-          <a
-            href="https://github.com/andreasphil/clamping"
-            title="Source on GitHub"
-          >
-            <svg
-              role="img"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-              />
-            </svg>
-          </a>
-        </div>
+      <footer data-container>
+        <small>
+          A thing made by
+          <a href="https://andreasphil.com">Andreas Philippi</a>. 🐱
+          <a href="https://github.com/andreasphil/clamping">View source</a>.
+        </small>
       </footer>
     </main>
 
@@ -181,21 +163,23 @@
     </script>
 
     <style>
-      :root {
-        --body-padding-y: 0rem;
-        --container-max-width: 32rem;
-        --container-padding-y: 1rem;
+      /* -------------------------------------------------- *
+       * Base                                               *
+       * -------------------------------------------------- */
 
-        --tint: 47;
-        --c-on-primary: hsl(var(--tint) 100% 15%);
-        --c-primary-container: hsl(var(--tint) 100% 59% / 0.3);
-        --c-primary: hsl(var(--tint) 100% 59%);
-        --link-color: hsl(var(--tint) 100% 30%);
+      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.7.0/dist/index.min.css")
+      layer(fine);
+
+      :root {
+        --container-max-width: 32rem;
+        --on-primary: hsl(var(--theme-tint) 100% 15%);
+        --theme-primary: var(--theme-tint) 100% 50%;
+        --theme-tint: 47;
       }
 
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --link-color: var(--c-primary);
+      @media not screen and (prefers-color-scheme: dark) {
+        a:not(:hover) {
+          color: hsl(var(--theme-tint) 100% 40%);
         }
       }
 
@@ -209,19 +193,35 @@
         padding: 2rem 2rem 1rem;
       }
 
-      label {
-        margin-bottom: var(--block-spacing-y);
+      footer {
+        text-align: center;
+        margin: 3rem 0 var(--block-spacing-y);
+        padding: 0 var(--large-border-radius);
       }
+
+      /* -------------------------------------------------- *
+       * Form                                               *
+       * -------------------------------------------------- */
+
       fieldset {
-        border: none;
         display: flex;
         gap: 1rem;
         padding: 0;
+        margin: 0;
       }
+
+      label {
+        margin-bottom: var(--block-spacing-y);
+      }
+
       input:invalid {
-        --input-border-color: hsl(10 100% 59%);
-        --input-focus-color: hsl(10 100% 59% / 0.3);
+        --outline: 0 0 0 4px hsl(10 100% 59% / 0.2);
+        border-color: hsl(10 100% 59%);
       }
+
+      /* -------------------------------------------------- *
+       * Output                                             *
+       * -------------------------------------------------- */
 
       .output-container {
         background: var(--c-surface-variant-bg);
@@ -229,16 +229,19 @@
         margin: var(--block-spacing-y) -1rem 0;
         padding: 1rem;
       }
+
       output {
         display: block;
         margin-bottom: 1rem;
       }
+
       output::before {
         color: var(--c-fg-variant);
         content: "Result:";
         display: block;
-        font-size: var(--small-font-size);
+        font-size: var(--font-size-small);
       }
+
       pre {
         margin: 0;
         padding: 0;
@@ -248,34 +251,25 @@
       .copy-button {
         position: relative;
       }
+
       .copy-button::before {
         background: var(--c-primary);
         border-radius: inherit;
         bottom: 0;
         content: "✓";
         left: 0;
-        opacity: 0.5;
+        opacity: 0;
         padding: inherit;
         position: absolute;
         right: 0;
         top: 0;
-        transform: scale(0);
         transition-duration: var(--transition-duration);
         transition-property: transform, opacity;
         transition-timing-function: var(--transition-timing-function);
       }
+
       .copy-button--success::before {
         opacity: 1;
-        transform: scale(1);
-      }
-
-      footer {
-        align-items: center;
-        color: var(--c-fg-variant);
-        display: flex;
-        justify-content: space-between;
-        margin: 3rem 0 var(--block-spacing-y);
-        padding: 0 var(--large-border-radius);
       }
     </style>
   </body>
