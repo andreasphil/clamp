@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>Clamping | Simple CSS clamp calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="hsl(48 96% 53%)" media="(prefers-color-scheme: light)"/>
+    <meta name="theme-color" content="hsl(48 96% 35%)" media="(prefers-color-scheme: dark)"/>
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="icon" href="assets/favicon.ico" sizes="any" />
   </head>
@@ -167,20 +169,14 @@
        * Base                                               *
        * -------------------------------------------------- */
 
-      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.7.0/dist/index.min.css")
+      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.9.0/dist/index.min.css")
       layer(fine);
 
       :root {
         --container-max-width: 32rem;
-        --on-primary: hsl(var(--theme-tint) 100% 15%);
-        --theme-primary: var(--theme-tint) 100% 50%;
-        --theme-tint: 47;
-      }
-
-      @media not screen and (prefers-color-scheme: dark) {
-        a:not(:hover) {
-          color: hsl(var(--theme-tint) 100% 40%);
-        }
+        --on-primary: hsl(var(--theme-tint) 73% 26%);
+        --theme-primary: var(--theme-tint) 96% 53%;
+        --theme-tint: 48;
       }
 
       body {
@@ -249,7 +245,9 @@
       }
 
       .copy-button {
+        display: block;
         position: relative;
+        width: 100%;
       }
 
       .copy-button::before {
