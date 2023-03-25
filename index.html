@@ -2,16 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clamping | Simple CSS clamp calculator</title>
+    <title>Simple CSS clamp calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="hsl(48 96% 53%)" media="(prefers-color-scheme: light)"/>
-    <meta name="theme-color" content="hsl(48 96% 35%)" media="(prefers-color-scheme: dark)"/>
+    <meta
+      name="theme-color"
+      content="hsl(0 0% 100%)"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="hsl(158 14% 9%)"
+      media="(prefers-color-scheme: dark)"
+    />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="icon" href="assets/favicon.ico" sizes="any" />
   </head>
 
   <body>
-    <main data-container>
+    <main data-container data-trim="both">
       <article>
         <form name="settings">
           <strong>Scale from ...</strong>
@@ -85,7 +93,11 @@
       </footer>
     </main>
 
-    <script>
+    <script type="module">
+      import { useThemeColor } from "https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.13.0/scripts/fine.js";
+
+      useThemeColor();
+
       const outputEl = document.querySelector("output > pre");
       const copyButtonEl = document.querySelector(".copy-button");
 
@@ -169,14 +181,11 @@
        * Base                                               *
        * -------------------------------------------------- */
 
-      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.9.1/dist/index.min.css")
+      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.13.0/dist/index.min.css")
       layer(fine);
 
       :root {
         --container-max-width: 32rem;
-        --on-primary: hsl(var(--theme-tint) 73% 26%);
-        --theme-primary: var(--theme-tint) 96% 53%;
-        --theme-tint: 48;
       }
 
       body {
@@ -191,8 +200,7 @@
 
       footer {
         text-align: center;
-        margin: 3rem 0 var(--block-spacing-y);
-        padding: 0 var(--large-border-radius);
+        margin: var(--body-padding-y) 0 0;
       }
 
       /* -------------------------------------------------- *
@@ -211,7 +219,7 @@
       }
 
       input:invalid {
-        --outline: 0 0 0 4px hsl(10 100% 59% / 0.2);
+        --outline: 0 0 0 3px hsl(10 100% 59% / 0.2);
         border-color: hsl(10 100% 59%);
       }
 
@@ -251,7 +259,7 @@
       }
 
       .copy-button::before {
-        background: var(--c-primary);
+        background: var(--primary);
         border-radius: inherit;
         bottom: 0;
         content: "✓";
