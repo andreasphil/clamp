@@ -74,7 +74,7 @@
     </main>
 
     <script type="module">
-      import { useThemeColor } from "https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.13.0/scripts/fine.js";
+      import { useThemeColor } from "https://cdn.jsdelivr.net/gh/andreasphil/design-system@v0.25.0/scripts/utils.js";
 
       useThemeColor();
 
@@ -161,12 +161,8 @@
        * Base                                               *
        * -------------------------------------------------- */
 
-      @import url("https://cdn.jsdelivr.net/gh/andreasphil/fine@v0.13.0/dist/index.min.css")
-      layer(fine);
-
-      :root {
-        --container-max-width: 32rem;
-      }
+      @import url("https://cdn.jsdelivr.net/gh/andreasphil/design-system@v0.25.0/dist/index.min.css")
+      layer(theme);
 
       body {
         align-items: center;
