@@ -16,9 +16,6 @@ All in a single HTML file because it's just more [comfortable](https://youtu.be/
 
 ## Credits
 
-Clamping uses:
-
-- Icons from [Simple Icons](https://simpleicons.org/)
-- Favicons generated with [IconKitchen](https://icon.kitchen/)
+Clamp uses favicons generated with [IconKitchen](https://icon.kitchen/).
 
 Thanks 🙏
