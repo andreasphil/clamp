@@ -13,9 +13,3 @@
 </p>
 
 All in a single HTML file because it's just more [comfortable](https://youtu.be/Uo3cL4nrGOk?t=92). That's it.
-
-## Credits
-
-Clamp uses favicons generated with [IconKitchen](https://icon.kitchen/).
-
-Thanks 🙏
