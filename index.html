@@ -10,8 +10,8 @@
     <main data-trim="both">
       <article>
         <form name="settings">
-          <strong>Scale from ...</strong>
           <fieldset>
+            <legend>Scale from ...</legend>
             <label>
               <small>Minimum size</small>
               <input
@@ -33,8 +33,8 @@
               />
             </label>
           </fieldset>
-          <strong>Scale to ...</strong>
           <fieldset>
+            <legend>Scale to ...</legend>
             <label>
               <small>Maximum size</small>
               <input
@@ -56,25 +56,17 @@
               />
             </label>
           </fieldset>
-          <label>
-            <strong>Unit</strong>
-            <select name="unit">
-              <!-- Temporarily removed until I figured out the maths for rem -->
-              <!-- <option value="rem">rem</option> -->
-              <option value="px">px</option>
-            </select>
-          </label>
         </form>
 
-        <div class="output-container">
-          <output><pre>Hello world</pre></output>
-          <button class="copy-button">Copy result to clipboard</button>
-        </div>
+        <hr />
+
+        <output data-title="Result"><pre>Hello world</pre></output>
+        <button class="copy-button">Copy result to clipboard</button>
       </article>
     </main>
 
     <script type="module">
-      import { useThemeColor } from "https://cdn.jsdelivr.net/gh/andreasphil/design-system@v0.34.0/scripts/utils.js";
+      import { useThemeColor } from "./vendor/andreasphil/design-system@v0.43.0/scripts/utils.js";
 
       useThemeColor();
 
@@ -86,7 +78,6 @@
         "viewportMin",
         "fontSizeMax",
         "viewportMax",
-        "unit",
       ].reduce((all, current) => {
         all[current] = document.forms.settings.elements[current].value;
         return all;
@@ -144,7 +135,7 @@
 
           const sizeOperator = size < 0 ? `- ${Math.abs(size)}` : `+ ${size}`;
 
-          outputEl.innerHTML = `clamp(${state.fontSizeMin}${state.unit}, ${viewport}vw ${sizeOperator}${state.unit}, ${state.fontSizeMax}${state.unit})`;
+          outputEl.innerHTML = `clamp(${state.fontSizeMin}px, ${viewport}vw ${sizeOperator}px, ${state.fontSizeMax}px)`;
         }
       }
 
@@ -157,31 +148,30 @@
     </script>
 
     <style>
-      /* -------------------------------------------------- *
-       * Base                                               *
-       * -------------------------------------------------- */
+      /* Base ------------------------------------------------ */
 
-      @import url("https://cdn.jsdelivr.net/gh/andreasphil/design-system@v0.34.0/dist/index.min.css")
+      @import url("./vendor/andreasphil/design-system@v0.43.0/dist/design-system.min.css")
       layer(theme);
 
-      article {
-        padding-bottom: 1rem;
+      output {
+        margin: var(--block-spacing-y) 0;
       }
 
-      /* -------------------------------------------------- *
-       * Form                                               *
-       * -------------------------------------------------- */
+      /* Form ------------------------------------------------ */
 
       fieldset {
         display: flex;
         gap: 1rem;
         padding: 0;
         margin: 0;
+
+        & + & {
+          margin-top: var(--block-spacing-y);
+        }
       }
 
       label {
         flex: 1;
-        margin-bottom: var(--block-spacing-y);
       }
 
       input:invalid {
@@ -189,34 +179,7 @@
         border-color: hsl(10 100% 59%);
       }
 
-      /* -------------------------------------------------- *
-       * Output                                             *
-       * -------------------------------------------------- */
-
-      .output-container {
-        background: var(--c-surface-variant-bg);
-        border-radius: var(--border-radius);
-        margin: var(--block-spacing-y) -1rem 0;
-        padding: 1rem;
-      }
-
-      output {
-        display: block;
-        margin-bottom: 1rem;
-      }
-
-      output::before {
-        color: var(--c-fg-variant);
-        content: "Result:";
-        display: block;
-        font-size: var(--font-size-small);
-      }
-
-      pre {
-        margin: 0;
-        padding: 0;
-        white-space: normal;
-      }
+      /* Output ---------------------------------------------- */
 
       .copy-button {
         display: block;
@@ -228,7 +191,7 @@
         background: var(--primary);
         border-radius: inherit;
         bottom: 0;
-        content: "✓";
+        content: "✅";
         left: 0;
         opacity: 0;
         padding: inherit;
